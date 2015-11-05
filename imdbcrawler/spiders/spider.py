@@ -6,7 +6,7 @@ from imdbcrawler.items import PersonItem
 
 
 class ImdbSpider(scrapy.Spider):
-    name = "ImdbActorCrawler"
+    name = "ImdbPersonCrawler"
     allowed_domains = ["imdb.com"]
     url_bases = ["http://www.imdb.com/"]
     start_urls = [
