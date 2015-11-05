@@ -6,7 +6,7 @@ class PersonItem(Item):
     imdbId = Field()
     url = Field()
     types = Field()
-    rating = Field()
+    ranking = Field()
     starMeter = Field()
     name = Field()
     birthDate = Field()

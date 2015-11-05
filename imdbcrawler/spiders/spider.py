@@ -30,7 +30,7 @@ class ImdbSpider(scrapy.Spider):
                 continue
 
             item = PersonItem()
-            item['rating'] = index
+            item['ranking'] = index
             item['imdbId'] = imdbId
             item['url'] = response.urljoin(rawUrl)
 
@@ -45,7 +45,7 @@ class ImdbSpider(scrapy.Spider):
         parsed = response.xpath(path)
         if parsed:
             extracted = parsed.extract()
-            return [re.sub("\s\s+", " ", x.strip()) for x in extracted]
+            return [x.strip() for x in extracted]
         return ['']
 
     def resolveId(self, url):
