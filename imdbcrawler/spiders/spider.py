@@ -21,7 +21,7 @@ class ImdbSpider(scrapy.Spider):
             if idx == 0:
                 continue
 
-            rawUrl = self.getXpath("*[@class='name']/a/@href", sel)[0]
+            rawUrl = self.getXpath("*[@class='name']/a/@href", sel, 0)
             imdbId = self.resolveId(rawUrl)
 
             # Db lookup
@@ -35,16 +35,9 @@ class ImdbSpider(scrapy.Spider):
             yield scrapy.Request(response.urljoin(item['url']), meta={'item':item }, callback=self.parsePerson, priority=1)
 
         # get the next page
-        next_page = self.getXpath("//*[@class='pagination']/a/@href", response)[-1]
+        next_page = response.xpath("//*[@class='pagination']/a/@href").extract()[-1]
         if next_page:
             yield scrapy.Request(response.urljoin(next_page), callback=self.parse)
-
-    def getXpath(self, path, response):
-        parsed = response.xpath(path)
-        if parsed:
-            extracted = parsed.extract()
-            return [x.strip() for x in extracted]
-        return ['']
 
     def resolveId(self, url):
         return re.sub('/.*?.*', '', re.sub('/name/', '', url))
@@ -52,17 +45,17 @@ class ImdbSpider(scrapy.Spider):
     def parsePerson(self, response):
         item = response.meta['item']
 
-        item["ranking"] = self.getXpath("//*[@id='meterRank']/text()", response)[0]
-        item["name"] = self.getXpath("//*[@itemprop='name']/text()", response)[0]
+        item["ranking"] = self.getXpath("//*[@id='meterRank']/text()", response, 0)
+        item["name"] = self.getXpath("//*[@itemprop='name']/text()", response, 0)
 
-        item["birthDate"] = self.getXpath("//*[@id='name-born-info']/time/@datetime", response)[0]
+        item["birthDate"] = self.getXpath("//*[@id='name-born-info']/time/@datetime", response, 0)
 
         if response.xpath("//*[@id='name-born-info']/a[1]/text()") and len(response.xpath("//*[@id='name-born-info']/a/text()").extract()) == 1:
-            item["bornPlace"] = self.getXpath("//*[@id='name-born-info']/a[1]/text()", response)[0]
+            item["bornPlace"] = self.getXpath("//*[@id='name-born-info']/a[1]/text()", response, 0)
         else:
-            item["bornName"] = self.getXpath("//*[@id='name-born-info']/a[1]/text()", response)[0]
-            item["bornPlace"] = self.getXpath("//*[@id='name-born-info']/a[2]/text()", response)[0]
-        item["types"] = self.getXpath("//*[@id='name-job-categories']/a/span/text()", response)
+            item["bornName"] = self.getXpath("//*[@id='name-born-info']/a[1]/text()", response, 0)
+            item["bornPlace"] = self.getXpath("//*[@id='name-born-info']/a[2]/text()", response, 0)
+        item["types"] = self.getXpath("//*[@id='name-job-categories']/a/span/text()", response, -1)
 
         return scrapy.Request(item["url"] + self.biography_endpoint, meta={'item':item }, callback=self.parseBiography, priority=2)
 
@@ -78,3 +71,12 @@ class ImdbSpider(scrapy.Spider):
             elif startIndex != 0:
                 item["quotes"].append(''.join(sel.xpath("node()").extract()).strip())
         return item
+
+    def getXpath(self, path, response, index):
+        parsed = response.xpath(path)
+        if parsed:
+            striped = [x.strip() for x in parsed.extract()]
+            if 0 > index > len(striped):
+                return striped
+            return striped[index]
+        return None
