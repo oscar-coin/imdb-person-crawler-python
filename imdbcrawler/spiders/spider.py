@@ -52,7 +52,7 @@ class ImdbSpider(scrapy.Spider):
     def parsePerson(self, response):
         item = response.meta['item']
 
-        item["starMeter"] = self.getXpath("//*[@id='meterRank']/text()", response)[0]
+        item["ranking"] = self.getXpath("//*[@id='meterRank']/text()", response)[0]
         item["name"] = self.getXpath("//*[@itemprop='name']/text()", response)[0]
 
         item["birthDate"] = self.getXpath("//*[@id='name-born-info']/time/@datetime", response)[0]
