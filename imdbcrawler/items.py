@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-
 from scrapy.item import Item, Field
+
 
 class PersonItem(Item):
     imdbId = Field()
@@ -9,6 +9,6 @@ class PersonItem(Item):
     ranking = Field()
     name = Field()
     birthDate = Field()
-    bornName = Field()
-    bornPlace = Field()
+    birthName = Field()
+    birthPlace = Field()
     quotes = Field()

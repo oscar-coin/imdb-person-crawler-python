@@ -10,10 +10,10 @@
     <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
-    <module name="imdb-crawler" />
+    <module name="imdb-person-crawler" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="/usr/local/lib/python2.7/site-packages/scrapy/cmdline.py" />
-    <option name="PARAMETERS" value="crawl ImdbActorCrawler" />
+    <option name="PARAMETERS" value="crawl ImdbPersonCrawler" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <method />
   </configuration>

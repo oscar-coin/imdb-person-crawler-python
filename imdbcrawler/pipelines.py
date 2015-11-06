@@ -1,5 +1,6 @@
 import pymongo
 
+
 class MongoPipeline(object):
 
     collection_name = 'imdb_persons'
@@ -18,9 +19,10 @@ class MongoPipeline(object):
     def open_spider(self, spider):
         self.client = pymongo.MongoClient(self.mongo_uri)
         self.db = self.client[self.mongo_db]
+
+        # pass mongodb interface to spider
         spider.db = self.db
         spider.collection_name = self.collection_name
-        #self.db.drop_collection(self.collection_name)
 
     def close_spider(self, spider):
         self.client.close()
