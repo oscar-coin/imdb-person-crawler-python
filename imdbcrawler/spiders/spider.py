@@ -10,18 +10,17 @@ class ImdbSpider(scrapy.Spider):
     allowed_domains = ["imdb.com"]
     url_bases = ["http://www.imdb.com/"]
     start_urls = [
-        "http://www.imdb.com/search/name?birth_date=1800,2016&count=100"
+        "http://www.imdb.com/search/name?birth_date=1974,2016&count=100",
+        "http://www.imdb.com/search/name?birth_date=1947,1973&count=100",
+        "http://www.imdb.com/search/name?birth_date=1800,1946&count=100"
     ]
     biography_endpoint = "bio?ref_=nm_dyk_qt_sm#quotes"
 
     def parse(self,response):
-        index = 0
         for idx, sel in enumerate(response.xpath("//*[@class='results']/tr")):
             if idx == 0:
                 continue
 
-            # indexing is only working when no order is set in url
-            index += 1
             rawUrl = self.getXpath("*[@class='name']/a/@href", sel)[0]
             imdbId = self.resolveId(rawUrl)
 
@@ -30,7 +29,6 @@ class ImdbSpider(scrapy.Spider):
                 continue
 
             item = PersonItem()
-            item['ranking'] = index
             item['imdbId'] = imdbId
             item['url'] = response.urljoin(rawUrl)
 
